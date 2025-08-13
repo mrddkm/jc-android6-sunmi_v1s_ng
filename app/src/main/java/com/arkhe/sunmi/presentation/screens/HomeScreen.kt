@@ -22,7 +22,12 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Sunmi V1s Demo") },
+                title = {
+                    Text(
+                        "Sunmi V1s Demo",
+                        fontSize = 16.sp // Reduced font size
+                    )
+                },
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
@@ -38,101 +43,112 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp), // Reduced padding
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(12.dp) // Fixed spacing
         ) {
             Text(
-                text = "Sunmi V1s\nPrint & Scan Demo",
-                fontSize = 28.sp,
+                text = "Sunmi V1s\nDemo",
+                fontSize = 20.sp, // Reduced from 28sp
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 48.dp)
+                modifier = Modifier.padding(bottom = 8.dp) // Reduced padding
             )
 
-            // Print Card
+            // Print Card - Compact version
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Reduced elevation
             ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Row( // Changed to Row for horizontal layout
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.Print,
                         contentDescription = "Print",
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(bottom = 16.dp),
+                        modifier = Modifier.size(32.dp), // Reduced icon size
                         tint = MaterialTheme.colorScheme.primary
                     )
 
-                    Text(
-                        text = "Printer Functions",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                    Spacer(modifier = Modifier.width(12.dp))
 
-                    Text(
-                        text = "Print text, images, QR codes, and barcodes",
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Printer",
+                            fontSize = 16.sp, // Reduced font size
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "Print text, QR, barcodes",
+                            fontSize = 12.sp, // Smaller description
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
 
                     Button(
                         onClick = onNavigateToPrint,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.width(80.dp), // Fixed width
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp) // Compact button
                     ) {
-                        Text("Open Printer")
+                        Text(
+                            "Open",
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }
 
-            // Scanner Card
+            // Scanner Card - Compact version
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.QrCodeScanner,
                         contentDescription = "Scanner",
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(bottom = 16.dp),
+                        modifier = Modifier.size(32.dp),
                         tint = MaterialTheme.colorScheme.primary
                     )
 
-                    Text(
-                        text = "Scanner Functions",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                    Spacer(modifier = Modifier.width(12.dp))
 
-                    Text(
-                        text = "Scan QR codes and barcodes with camera",
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Scanner",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "Scan QR & barcodes",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
 
                     Button(
                         onClick = onNavigateToScan,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.width(80.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                     ) {
-                        Text("Open Scanner")
+                        Text(
+                            "Open",
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }
+
+            // Add some bottom spacing if needed
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

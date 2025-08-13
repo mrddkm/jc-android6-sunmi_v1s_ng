@@ -4,9 +4,11 @@ import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -37,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.arkhe.sunmi.presentation.viewmodel.MainViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -71,7 +74,12 @@ fun PrintScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Printer Functions") },
+                title = {
+                    Text(
+                        "Printer Functions",
+                        fontSize = 16.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -88,9 +96,9 @@ fun PrintScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(12.dp) // Reduced padding
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp) // Reduced spacing
         ) {
 
             if (uiState.isLoading) {
@@ -98,26 +106,29 @@ fun PrintScreen(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp) // Smaller loading indicator
+                    )
                 }
             }
 
-            // Print Text Card
+            // Print Text Card - Compact
             Card {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.padding(12.dp), // Reduced padding
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
                         text = "Print Text",
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.titleMedium // Smaller title
                     )
 
                     OutlinedTextField(
                         value = textToPrint,
                         onValueChange = { textToPrint = it },
-                        label = { Text("Text to print") },
-                        modifier = Modifier.fillMaxWidth()
+                        label = { Text("Text to print", fontSize = 12.sp) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true // Single line to save space
                     )
 
                     Button(
@@ -125,27 +136,28 @@ fun PrintScreen(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !uiState.isLoading
                     ) {
-                        Text("Print Text")
+                        Text("Print Text", fontSize = 12.sp)
                     }
                 }
             }
 
-            // Print QR Code Card
+            // Print QR Code Card - Compact
             Card {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
                         text = "Print QR Code",
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     OutlinedTextField(
                         value = qrContent,
                         onValueChange = { qrContent = it },
-                        label = { Text("QR Content") },
-                        modifier = Modifier.fillMaxWidth()
+                        label = { Text("QR Content", fontSize = 12.sp) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
                     )
 
                     Button(
@@ -153,28 +165,29 @@ fun PrintScreen(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !uiState.isLoading
                     ) {
-                        Text("Print QR Code")
+                        Text("Print QR Code", fontSize = 12.sp)
                     }
                 }
             }
 
-            // Print Barcode Card
+            // Print Barcode Card - Compact
             Card {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
                         text = "Print Barcode",
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     OutlinedTextField(
                         value = barcodeContent,
                         onValueChange = { barcodeContent = it },
-                        label = { Text("Barcode Content") },
+                        label = { Text("Barcode Content", fontSize = 12.sp) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
                     )
 
                     Button(
@@ -182,65 +195,77 @@ fun PrintScreen(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !uiState.isLoading
                     ) {
-                        Text("Print Barcode")
+                        Text("Print Barcode", fontSize = 12.sp)
                     }
                 }
             }
 
-            // Print Image Card
-            Card {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+            // Print Image and Sample Receipt in a Row to save space
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Print Image Card - Compact
+                Card(
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = "Print Image",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-
-                    Text(
-                        text = "This will print a sample image from resources",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Button(
-                        onClick = {
-                            val bitmap = BitmapFactory.decodeResource(
-                                context.resources,
-                                android.R.drawable.ic_dialog_info
-                            )
-                            viewModel.printImage(bitmap)
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = !uiState.isLoading
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("Print Sample Image")
+                        Text(
+                            text = "Image",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+
+                        Text(
+                            text = "Sample image",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 10.sp
+                        )
+
+                        Button(
+                            onClick = {
+                                val bitmap = BitmapFactory.decodeResource(
+                                    context.resources,
+                                    android.R.drawable.ic_dialog_info
+                                )
+                                viewModel.printImage(bitmap)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !uiState.isLoading
+                        ) {
+                            Text("Print", fontSize = 10.sp)
+                        }
                     }
                 }
-            }
 
-            // Sample Receipt Card
-            Card {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                // Sample Receipt Card - Compact
+                Card(
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = "Sample Receipt",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-
-                    Text(
-                        text = "Print a complete sample receipt with header, items, and QR code",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Button(
-                        onClick = { viewModel.printSampleReceipt() },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = !uiState.isLoading
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("Print Sample Receipt")
+                        Text(
+                            text = "Receipt",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+
+                        Text(
+                            text = "Sample receipt",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 10.sp
+                        )
+
+                        Button(
+                            onClick = { viewModel.printSampleReceipt() },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !uiState.isLoading
+                        ) {
+                            Text("Print", fontSize = 10.sp)
+                        }
                     }
                 }
             }
