@@ -1,56 +1,100 @@
 package com.arkhe.sunmi.data.repository
 
 import android.content.Context
-import com.arkhe.sunmi.domain.model.*
+import com.arkhe.sunmi.domain.model.BarcodeFormat
+import com.arkhe.sunmi.domain.model.ImageAlignment
+import com.arkhe.sunmi.domain.model.PaperStatus
+import com.arkhe.sunmi.domain.model.PrintData
+import com.arkhe.sunmi.domain.model.PrinterStatus
+import com.arkhe.sunmi.domain.model.TemperatureStatus
+import com.arkhe.sunmi.domain.model.TextAlignment
 import com.arkhe.sunmi.domain.repository.PrinterRepository
 import com.arkhe.sunmi.utils.BitmapUtils
+import com.sunmi.peripheral.printer.InnerPrinterCallback
+import com.sunmi.peripheral.printer.InnerPrinterException
+import com.sunmi.peripheral.printer.InnerPrinterManager
+import com.sunmi.peripheral.printer.SunmiPrinterService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 class PrinterRepositoryImpl(
     private val context: Context
 ) : PrinterRepository {
 
-    private val sunmiPrintHelper = SunmiPrintHelper.getInstance()
+    private var sunmiService: SunmiPrinterService? = null
+
+    init {
+        initializeSunmiService()
+    }
+
+    private fun initializeSunmiService() {
+        try {
+            InnerPrinterManager.getInstance().bindService(
+                context,
+                object : InnerPrinterCallback() {
+                    override fun onConnected(service: SunmiPrinterService?) {
+                        sunmiService = service
+                    }
+
+                    override fun onDisconnected() {
+                        sunmiService = null
+                    }
+                }
+            )
+        } catch (e: InnerPrinterException) {
+            e.printStackTrace()
+        }
+    }
 
     override suspend fun print(data: PrintData): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            val service = sunmiService ?: return@withContext Result.failure(
+                Exception("Printer service not connected")
+            )
+
             when (data) {
                 is PrintData.Text -> {
-                    sunmiPrintHelper.setAlign(data.alignment.toSunmiAlignment())
-                    if (data.isBold) sunmiPrintHelper.setBold(true)
-                    sunmiPrintHelper.setFontSize(data.fontSize.toFloat())
-                    sunmiPrintHelper.printText(data.content, null)
-                    if (data.isBold) sunmiPrintHelper.setBold(false)
+                    service.setAlignment(data.alignment.toSunmiAlignment(), null)
+                    if (data.isBold) service.sendRAWData(
+                        byteArrayOf(0x1B, 0x45, 0x01),
+                        null
+                    ) // Bold on
+                    service.setFontSize(data.fontSize.toFloat(), null)
+                    service.printText(data.content, null)
+                    if (data.isBold) service.sendRAWData(
+                        byteArrayOf(0x1B, 0x45, 0x00),
+                        null
+                    ) // Bold off
                 }
 
                 is PrintData.Image -> {
-                    sunmiPrintHelper.setAlign(data.alignment.toSunmiAlignment())
-                    sunmiPrintHelper.printBitmap(data.bitmap, null)
+                    service.setAlignment(data.alignment.toSunmiAlignment(), null)
+                    service.printBitmap(data.bitmap, null)
                 }
 
                 is PrintData.QRCode -> {
-                    sunmiPrintHelper.setAlign(1) // CENTER
-                    sunmiPrintHelper.printQr(data.content, data.size, null)
+                    service.setAlignment(1, null) // CENTER
+                    service.printQRCode(data.content, data.size, 0, null)
                 }
 
                 is PrintData.Barcode -> {
-                    sunmiPrintHelper.setAlign(1) // CENTER
+                    service.setAlignment(1, null) // CENTER
                     val bitmap = BitmapUtils.createBarcodeBitmap(
                         data.content,
                         data.format.toZXingFormat(),
                         data.width,
                         data.height
                     )
-                    sunmiPrintHelper.printBitmap(bitmap, null)
+                    service.printBitmap(bitmap, null)
                 }
 
                 is PrintData.LineFeed -> {
-                    sunmiPrintHelper.feedPaper()
+                    service.lineWrap(1, null)
                 }
 
                 is PrintData.CutPaper -> {
-                    sunmiPrintHelper.cutpaper(null)
+                    service.cutPaper(null)
                 }
             }
             Result.success(Unit)
@@ -73,10 +117,19 @@ class PrinterRepositoryImpl(
 
     override suspend fun checkPrinterStatus(): Result<PrinterStatus> = withContext(Dispatchers.IO) {
         try {
+            val service = sunmiService ?: return@withContext Result.failure(
+                Exception("Printer service not connected")
+            )
+
+            // Use suspendCancellableCoroutine to handle callback-based status check
+            val printerState = suspendCancellableCoroutine<Int> { continuation ->
+                service.updatePrinterState()
+            }
+
             val status = PrinterStatus(
-                isConnected = sunmiPrintHelper.printerStatus != null,
-                paperStatus = PaperStatus.OK, // You can implement actual status check
-                temperature = TemperatureStatus.NORMAL
+                isConnected = sunmiService != null && printerState == 1,
+                paperStatus = PaperStatus.OK, // You can implement actual paper status check
+                temperature = TemperatureStatus.NORMAL // You can implement actual temperature check
             )
             Result.success(status)
         } catch (e: Exception) {
@@ -86,7 +139,11 @@ class PrinterRepositoryImpl(
 
     override suspend fun initializePrinter(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            sunmiPrintHelper.initPrinter(null)
+            val service = sunmiService ?: return@withContext Result.failure(
+                Exception("Printer service not connected")
+            )
+
+            service.printerInit(null)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
