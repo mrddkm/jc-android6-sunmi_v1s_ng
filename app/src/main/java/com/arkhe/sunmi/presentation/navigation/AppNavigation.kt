@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arkhe.sunmi.presentation.screens.HomeScreen
 import com.arkhe.sunmi.presentation.screens.PrintScreen
+import com.arkhe.sunmi.presentation.screens.ReceiptTextOnlyScreen
 import com.arkhe.sunmi.presentation.screens.ScanScreen
 import com.arkhe.sunmi.presentation.screens.SettingsScreen
 
@@ -19,9 +20,16 @@ fun AppNavigation() {
     ) {
         composable(NavigationDestinations.HOME) {
             HomeScreen(
+                onNavigateToReceiptTextOnly = { navController.navigate(NavigationDestinations.RECEIPT) },
                 onNavigateToPrint = { navController.navigate(NavigationDestinations.PRINT) },
                 onNavigateToScan = { navController.navigate(NavigationDestinations.SCAN) },
                 onNavigateToSettings = { navController.navigate(NavigationDestinations.SETTINGS) }
+            )
+        }
+
+        composable(NavigationDestinations.RECEIPT) {
+            ReceiptTextOnlyScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 

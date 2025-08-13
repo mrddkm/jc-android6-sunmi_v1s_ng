@@ -241,6 +241,204 @@ class MainViewModel(
         }
     }
 
+    fun printSampleReceiptTextOnly(
+        textHeader: String = "",
+        textHeaderDate: String = "",
+        textHeaderLocation: String = "",
+        textHeaderTransactionId: String = "",
+        textPayment: String = "",
+        textPaymentDetails: String = "",
+        textPaymentAmount: String = "",
+        textPaymentDetailsLitres: String = "",
+        textService: String = "",
+        textServiceAmount: String = "",
+        textServiceDetailsCVC: String = "",
+        textServiceDetailsHead: String = "",
+        textTotalPaid: String = "",
+        textTotalPaidAmount: String = "",
+        textPaymentMethod: String = "",
+        textPaymentMethodDetails: String = "",
+        textThankYou: String = "",
+        textMoreInfo: String = "",
+    ) {
+        Log.d(TAG, "printSampleReceipt called")
+
+        val contentLine = "________________________________"
+        val fontSize32 = 32
+        val fontSize24 = 24
+        val fontSize20 = 20
+        val fontSize16 = 16
+
+        viewModelScope.launch {
+            try {
+                setLoading(true)
+                Log.d(TAG, "Starting sample receipt print operation")
+
+                val receiptItems = listOf(
+                    PrintData.Text(
+                        content = textHeader,
+                        fontSize = fontSize32,
+                        isBold = true,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = textHeaderDate,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = textHeaderLocation,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = textHeaderTransactionId,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    /*Line*/
+                    PrintData.Text(
+                        content = contentLine,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    /*Payment Header*/
+                    PrintData.Text(
+                        content = textPayment,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.LEFT
+                    ),
+                    PrintData.LineFeed,
+                    /*Payment*/
+                    PrintData.Text(
+                        content = textPaymentDetails,
+                        fontSize = fontSize24,
+                        isBold = true,
+                        alignment = TextAlignment.LEFT
+                    ),
+                    PrintData.Text(
+                        content = textPaymentAmount,
+                        fontSize = fontSize24,
+                        isBold = true,
+                        alignment = TextAlignment.RIGHT
+                    ),
+                    /*Payment Details*/
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = textPaymentDetailsLitres,
+                        fontSize = fontSize20,
+                        isBold = false,
+                        alignment = TextAlignment.LEFT
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = "12345678901234567892123456789312345678941234567895",
+                        fontSize = fontSize20,
+                        isBold = false,
+                        alignment = TextAlignment.RIGHT
+                    ),
+                    PrintData.LineFeed,
+                    /*Line*/
+                    PrintData.Text(
+                        content = contentLine,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    /*Total Paid*/
+                    PrintData.Text(
+                        content = textTotalPaid,
+                        fontSize = fontSize24,
+                        isBold = true,
+                        alignment = TextAlignment.LEFT
+                    ),
+                    PrintData.Text(
+                        content = textTotalPaidAmount,
+                        fontSize = fontSize24,
+                        isBold = true,
+                        alignment = TextAlignment.RIGHT
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = "12345678901234567892123456789312345678941234567895",
+                        fontSize = fontSize24,
+                        isBold = true,
+                        alignment = TextAlignment.RIGHT
+                    ),
+                    PrintData.LineFeed,
+                    /*Payment Method*/
+                    PrintData.Text(
+                        content = textPaymentMethod,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.LEFT
+                    ),
+                    PrintData.Text(
+                        content = textPaymentMethodDetails,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.RIGHT
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.LineFeed,
+                    PrintData.LineFeed,
+                    /*Thanks*/
+                    PrintData.Text(
+                        content = textThankYou,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = textMoreInfo,
+                        fontSize = fontSize24,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.LineFeed,
+                    PrintData.LineFeed,
+
+                    PrintData.Text(
+                        content = contentLine,
+                        fontSize = fontSize16,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                )
+
+                printUseCase.printReceipt(receiptItems)
+                    .onSuccess {
+                        Log.d(TAG, "Sample receipt printed successfully")
+                        showMessage("Receipt printed successfully")
+                    }
+                    .onFailure {
+                        Log.e(TAG, "Failed to print receipt", it)
+                        showError("Failed to print receipt: ${it.message}")
+                    }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception in printSampleReceipt", e)
+                showError("Unexpected error: ${e.message}")
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+
     // Scanner Functions
     fun startScanning() {
         Log.d(TAG, "startScanning called")

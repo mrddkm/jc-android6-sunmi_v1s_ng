@@ -96,7 +96,7 @@ fun PrintScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(12.dp) // Reduced padding
+                .padding(12.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp) // Reduced spacing
         ) {
