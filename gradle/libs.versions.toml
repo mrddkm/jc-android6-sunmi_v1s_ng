@@ -48,7 +48,7 @@ datastore = "1.1.7"
 navigation = "2.8.5"
 
 # Sunmi SDK
-sunmi-printer = "1.0.18"
+sunmi-printer = "1.0.24"
 
 # Camera & Scanning
 camera = "1.4.2"
