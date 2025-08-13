@@ -1,15 +1,9 @@
 package com.arkhe.sunmi.data.repository
 
 import android.content.Context
-import com.arkhe.sunmi.domain.model.BarcodeFormat
-import com.arkhe.sunmi.domain.model.ImageAlignment
-import com.arkhe.sunmi.domain.model.PaperStatus
-import com.arkhe.sunmi.domain.model.PrintData
-import com.arkhe.sunmi.domain.model.PrinterStatus
-import com.arkhe.sunmi.domain.model.TemperatureStatus
-import com.arkhe.sunmi.domain.model.TextAlignment
+import com.arkhe.sunmi.domain.model.*
 import com.arkhe.sunmi.domain.repository.PrinterRepository
-import com.sunmi.peripheral.printer.*
+import com.arkhe.sunmi.utils.BitmapUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -29,14 +23,17 @@ class PrinterRepositoryImpl(
                     sunmiPrintHelper.printText(data.content, null)
                     if (data.isBold) sunmiPrintHelper.setBold(false)
                 }
+
                 is PrintData.Image -> {
                     sunmiPrintHelper.setAlign(data.alignment.toSunmiAlignment())
                     sunmiPrintHelper.printBitmap(data.bitmap, null)
                 }
+
                 is PrintData.QRCode -> {
                     sunmiPrintHelper.setAlign(1) // CENTER
                     sunmiPrintHelper.printQr(data.content, data.size, null)
                 }
+
                 is PrintData.Barcode -> {
                     sunmiPrintHelper.setAlign(1) // CENTER
                     val bitmap = BitmapUtils.createBarcodeBitmap(
@@ -47,9 +44,11 @@ class PrinterRepositoryImpl(
                     )
                     sunmiPrintHelper.printBitmap(bitmap, null)
                 }
+
                 is PrintData.LineFeed -> {
                     sunmiPrintHelper.feedPaper()
                 }
+
                 is PrintData.CutPaper -> {
                     sunmiPrintHelper.cutpaper(null)
                 }
@@ -60,16 +59,17 @@ class PrinterRepositoryImpl(
         }
     }
 
-    override suspend fun printReceipt(items: List<PrintData>): Result<Unit> = withContext(Dispatchers.IO) {
-        try {
-            items.forEach { item ->
-                print(item).getOrThrow()
+    override suspend fun printReceipt(items: List<PrintData>): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                items.forEach { item ->
+                    print(item).getOrThrow()
+                }
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
             }
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
-    }
 
     override suspend fun checkPrinterStatus(): Result<PrinterStatus> = withContext(Dispatchers.IO) {
         try {

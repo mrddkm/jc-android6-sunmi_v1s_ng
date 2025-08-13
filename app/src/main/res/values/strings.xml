@@ -1,3 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sunmi V1s</string>
+    <string name="app_name">Sunmi V1s ng</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_print">Print</string>
+    <string name="nav_scan">Scanner</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Print Screen -->
+    <string name="print_title">Printer Functions</string>
+    <string name="print_text">Print Text</string>
+    <string name="print_qr">Print QR Code</string>
+    <string name="print_barcode">Print Barcode</string>
+    <string name="print_image">Print Image</string>
+    <string name="print_receipt">Print Sample Receipt</string>
+    <string name="text_to_print">Text to print</string>
+    <string name="qr_content">QR Content</string>
+    <string name="barcode_content">Barcode Content</string>
+
+    <!-- Scanner Screen -->
+    <string name="scanner_title">Scanner Functions</string>
+    <string name="start_scanning">Start Scanning</string>
+    <string name="stop_scanning">Stop Scanning</string>
+    <string name="scan_results">Scan Results</string>
+    <string name="no_scans">No scans yet</string>
+    <string name="clear_history">Clear History</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="printer_settings">Printer Settings</string>
+    <string name="scanner_settings">Scanner Settings</string>
+    <string name="app_settings">App Settings</string>
+    <string name="auto_cut_paper">Auto Cut Paper</string>
+    <string name="auto_cut_paper_desc">Automatically cut paper after printing</string>
+    <string name="sound_effects">Sound Effects</string>
+    <string name="sound_effects_desc">Play sound on successful operations</string>
+    <string name="auto_save_scans">Auto Save Scans</string>
+    <string name="auto_save_scans_desc">Automatically save scan results to history</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_desc">Enable dark theme</string>
+
+    <!-- Messages -->
+    <string name="print_success">Printed successfully</string>
+    <string name="print_failed">Print failed</string>
+    <string name="scanner_started">Scanner started</string>
+    <string name="scanner_stopped">Scanner stopped</string>
+    <string name="camera_permission_required">Camera Permission Required</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="permission_camera_desc">Please grant camera permission to use the scanner</string>
+
+    <!-- Errors -->
+    <string name="error_printer_not_connected">Printer not connected</string>
+    <string name="error_paper_empty">Paper is empty</string>
+    <string name="error_printer_overheated">Printer overheated</string>
+    <string name="error_invalid_content">Invalid content</string>
+    <string name="error_camera_not_available">Camera not available</string>
+
+    <!-- About -->
+    <string name="about">About</string>
+    <string name="version">Version 1.0.0</string>
+    <string name="developer">Developed for Sunmi V1s POS</string>
 </resources>

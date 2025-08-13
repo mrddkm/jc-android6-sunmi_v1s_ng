@@ -7,4 +7,16 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Sunmi Brand Colors -->
+    <color name="sunmi_blue">#FF1976D2</color>
+    <color name="sunmi_orange">#FFFF9800</color>
+    <color name="sunmi_green">#FF4CAF50</color>
+    <color name="sunmi_red">#FFF44336</color>
+
+    <!-- Custom Colors -->
+    <color name="background_light">#FFFFFBFE</color>
+    <color name="background_dark">#FF1C1B1F</color>
+    <color name="surface_light">#FFF7F2FA</color>
+    <color name="surface_dark">#FF313033</color>
 </resources>

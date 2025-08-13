@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_s">8dp</dimen>
+    <dimen name="space_m">16dp</dimen>
+    <dimen name="space_l">24dp</dimen>
+    <dimen name="space_xl">32dp</dimen>
+    <dimen name="space_xxl">48dp</dimen>
+
+    <!-- Component Sizes -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="icon_size">24dp</dimen>
+    <dimen name="icon_size_large">48dp</dimen>
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="corner_radius">8dp</dimen>
+
+    <!-- Scanner -->
+    <dimen name="scanner_height">300dp</dimen>
+    <dimen name="scanner_width">300dp</dimen>
+
+    <!-- Print -->
+    <dimen name="qr_size_default">200dp</dimen>
+    <dimen name="barcode_width_default">300dp</dimen>
+    <dimen name="barcode_height_default">100dp</dimen>
+</resources>

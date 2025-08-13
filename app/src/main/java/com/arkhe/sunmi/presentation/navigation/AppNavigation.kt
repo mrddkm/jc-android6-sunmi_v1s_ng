@@ -5,6 +5,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arkhe.sunmi.presentation.screens.HomeScreen
+import com.arkhe.sunmi.presentation.screens.PrintScreen
+import com.arkhe.sunmi.presentation.screens.ScanScreen
+import com.arkhe.sunmi.presentation.screens.SettingsScreen
 
 @Composable
 fun AppNavigation() {
