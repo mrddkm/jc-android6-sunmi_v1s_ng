@@ -1,11 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
-import java.time.Clock
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Properties
-import java.util.TimeZone
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,14 +18,10 @@ val buildPropertiesFile = rootProject.file("build.properties")
 if (buildPropertiesFile.exists()) {
     buildProperties.load(FileInputStream(buildPropertiesFile))
 }
+
 val appVersionCode = buildProperties.getProperty("versionCode", "1").toInt()
-val appVersionName: String? = buildProperties.getProperty("versionName", "1.0.0")
-val appProductName: String? = buildProperties.getProperty("productName", "arkhe")
-val now: Instant? = Clock.systemUTC().instant()
-val localDateTime: LocalDateTime? = now?.atZone(TimeZone.getDefault().toZoneId())?.toLocalDateTime()
-val timestampFormatter: DateTimeFormatter? = DateTimeFormatter.ofPattern("yyMMddHHmm")
-val timestampString = localDateTime?.format(timestampFormatter)
-val buildTimestamp = timestampString
+val appVersionName = buildProperties.getProperty("versionName", "1.0.0")!!
+val buildTimestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"))!!
 
 android {
     namespace = "com.arkhe.sunmi"
@@ -81,10 +74,6 @@ android {
     }
 }
 
-base {
-    archivesName.set("$appProductName-$appVersionName.build$buildTimestamp")
-}
-
 dependencies {
     // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
@@ -94,7 +83,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.androidx.window)
     implementation(libs.google.material)
 
     // Lifecycle
@@ -102,7 +90,6 @@ dependencies {
 
     // Compose
     implementation(libs.bundles.compose.core)
-    implementation(libs.androidx.constraintlayout.compose)
 
     // Navigation
     implementation(libs.androidx.compose.navigation)
@@ -113,9 +100,6 @@ dependencies {
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 
-    // Ktor Client
-    implementation(libs.bundles.ktor.client)
-
     // Koin DI
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
@@ -124,20 +108,14 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
 
-    // DataStore
-    implementation(libs.bundles.datastore)
-
     // Sunmi SDK
     implementation(libs.sunmi.printerlibrary)
 
     // Camera & Scanning
-    implementation(libs.bundles.camera)
     implementation(libs.bundles.scanning)
 
     // Utilities
     implementation(libs.accompanist.permissions)
-    implementation(libs.coil.compose)
-    implementation(libs.kotlinx.coroutines.android)
 
     // Testing
     testImplementation(libs.bundles.testing)

@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
-    var darkMode by remember { mutableStateOf(false) }
-    var autoSave by remember { mutableStateOf(true) }
+    var autoCutPaper by remember { mutableStateOf(true) }
     var soundEnabled by remember { mutableStateOf(true) }
+    var autoSaveScans by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
@@ -88,8 +88,8 @@ fun SettingsScreen(
                             )
                         }
                         Switch(
-                            checked = autoSave,
-                            onCheckedChange = { autoSave = it }
+                            checked = autoCutPaper,
+                            onCheckedChange = { autoCutPaper = it }
                         )
                     }
 
@@ -141,40 +141,8 @@ fun SettingsScreen(
                             )
                         }
                         Switch(
-                            checked = autoSave,
-                            onCheckedChange = { autoSave = it }
-                        )
-                    }
-                }
-            }
-
-            // App Settings
-            Card {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "App Settings",
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text("Dark Mode")
-                            Text(
-                                "Enable dark theme",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Switch(
-                            checked = darkMode,
-                            onCheckedChange = { darkMode = it }
+                            checked = autoSaveScans,
+                            onCheckedChange = { autoSaveScans = it }
                         )
                     }
                 }

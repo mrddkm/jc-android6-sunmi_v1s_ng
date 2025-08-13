@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
@@ -26,20 +27,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
+import com.arkhe.sunmi.presentation.components.ScannerView
 import com.arkhe.sunmi.presentation.viewmodel.MainViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.journeyapps.barcodescanner.CompoundBarcodeView
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -54,8 +52,15 @@ fun ScanScreen(
     val scanResults by viewModel.scanResults.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
-    var isScanning by remember { mutableStateOf(false) }
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (uiState.isScanning) {
+                viewModel.stopScanning()
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -68,6 +73,16 @@ fun ScanScreen(
                             contentDescription = "Back"
                         )
                     }
+                },
+                actions = {
+                    if (scanResults.isNotEmpty()) {
+                        IconButton(onClick = { viewModel.clearScanHistory() }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Clear History"
+                            )
+                        }
+                    }
                 }
             )
         },
@@ -75,18 +90,16 @@ fun ScanScreen(
             if (cameraPermissionState.status.isGranted) {
                 FloatingActionButton(
                     onClick = {
-                        if (isScanning) {
+                        if (uiState.isScanning) {
                             viewModel.stopScanning()
-                            isScanning = false
                         } else {
                             viewModel.startScanning()
-                            isScanning = true
                         }
                     }
                 ) {
                     Icon(
-                        imageVector = if (isScanning) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = if (isScanning) "Stop Scanning" else "Start Scanning"
+                        imageVector = if (uiState.isScanning) Icons.Default.Stop else Icons.Default.PlayArrow,
+                        contentDescription = if (uiState.isScanning) "Stop Scanning" else "Start Scanning"
                     )
                 }
             }
@@ -128,20 +141,12 @@ fun ScanScreen(
                 }
             } else {
                 // Camera View
-                if (isScanning) {
-                    AndroidView(
+                if (uiState.isScanning) {
+                    ScannerView(
+                        onBarcodeViewCreated = { /* Configure with repository if needed */ },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp),
-                        factory = { context ->
-                            CompoundBarcodeView(context).apply {
-                                // Configure scanner repository with this view
-                                val scannerRepo =
-                                    context.applicationContext as? android.app.Application
-                                // You might need to access Koin here to get the repository
-                                resume()
-                            }
-                        }
+                            .height(300.dp)
                     )
                 } else {
                     Box(
@@ -170,7 +175,7 @@ fun ScanScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Scan Results",
+                        text = "Scan Results (${scanResults.size})",
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
@@ -213,8 +218,7 @@ fun ScanScreen(
                                                 text = SimpleDateFormat(
                                                     "HH:mm:ss",
                                                     Locale.getDefault()
-                                                )
-                                                    .format(Date(result.timestamp)),
+                                                ).format(Date(result.timestamp)),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )

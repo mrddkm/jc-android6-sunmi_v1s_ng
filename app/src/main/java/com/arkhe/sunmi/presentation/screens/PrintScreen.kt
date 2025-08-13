@@ -21,7 +21,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -47,14 +48,22 @@ fun PrintScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val snackBarHostState = remember { SnackbarHostState() }
 
     var textToPrint by remember { mutableStateOf("Hello Sunmi V1s!") }
     var qrContent by remember { mutableStateOf("https://sunmi.com") }
     var barcodeContent by remember { mutableStateOf("1234567890") }
 
-    LaunchedEffect(uiState.message, uiState.error) {
-        if (uiState.message != null || uiState.error != null) {
-            kotlinx.coroutines.delay(3000)
+    LaunchedEffect(uiState.message) {
+        uiState.message?.let {
+            snackBarHostState.showSnackbar(it)
+            viewModel.clearMessage()
+        }
+    }
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            snackBarHostState.showSnackbar(it)
             viewModel.clearMessage()
         }
     }
@@ -73,18 +82,7 @@ fun PrintScreen(
                 }
             )
         },
-        snackbarHost = {
-            if (uiState.message != null) {
-                Snackbar { Text(uiState.message!!) }
-            }
-            if (uiState.error != null) {
-                Snackbar(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                ) {
-                    Text(uiState.error!!)
-                }
-            }
-        }
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -104,6 +102,7 @@ fun PrintScreen(
                 }
             }
 
+            // Print Text Card
             Card {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -131,6 +130,7 @@ fun PrintScreen(
                 }
             }
 
+            // Print QR Code Card
             Card {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -158,6 +158,7 @@ fun PrintScreen(
                 }
             }
 
+            // Print Barcode Card
             Card {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -186,6 +187,7 @@ fun PrintScreen(
                 }
             }
 
+            // Print Image Card
             Card {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -217,6 +219,7 @@ fun PrintScreen(
                 }
             }
 
+            // Sample Receipt Card
             Card {
                 Column(
                     modifier = Modifier.padding(16.dp),

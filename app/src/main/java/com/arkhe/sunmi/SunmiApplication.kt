@@ -3,7 +3,6 @@ package com.arkhe.sunmi
 import android.app.Application
 import com.arkhe.sunmi.di.appModule
 import com.arkhe.sunmi.di.databaseModule
-import com.arkhe.sunmi.di.networkModule
 import com.arkhe.sunmi.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -19,7 +18,6 @@ class SunmiApplication : Application() {
             modules(
                 appModule,
                 databaseModule,
-                networkModule,
                 viewModelModule
             )
         }
