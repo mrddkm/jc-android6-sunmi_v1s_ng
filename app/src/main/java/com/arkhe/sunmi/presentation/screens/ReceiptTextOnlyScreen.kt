@@ -75,7 +75,7 @@ fun ReceiptTextOnlyScreen(
     val textPaymentMethodDetails = "Credit Card"
 
     val textThankYou = "Thank you for your purchase!"
-    val textMoreInfo = "For more information, please visit our website."
+    val textMoreInfo = "© Gaenta S.S. ― gaenta.id"
 
     LaunchedEffect(uiState.message) {
         uiState.message?.let {

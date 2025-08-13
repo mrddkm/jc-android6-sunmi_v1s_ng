@@ -11,6 +11,7 @@ import com.arkhe.sunmi.domain.model.ScanResult
 import com.arkhe.sunmi.domain.model.TextAlignment
 import com.arkhe.sunmi.domain.usecase.PrintUseCase
 import com.arkhe.sunmi.domain.usecase.ScanUseCase
+import com.arkhe.sunmi.utils.TextFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -263,11 +264,15 @@ class MainViewModel(
     ) {
         Log.d(TAG, "printSampleReceipt called")
 
-        val contentLine = "________________________________"
-        val fontSize32 = 32
-        val fontSize24 = 24
-        val fontSize20 = 20
+        val formatter = TextFormatter()
+
+        val contentLine = "――――――――――――――――――――"
+        val contentCutPaper = "‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥ ✂ ‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥"
+        val bulletOperator = "∙"
         val fontSize16 = 16
+        val fontSize20 = 20
+        val fontSize24 = 24
+        val fontSize32 = 32
 
         viewModelScope.launch {
             try {
@@ -322,13 +327,11 @@ class MainViewModel(
                     PrintData.LineFeed,
                     /*Payment*/
                     PrintData.Text(
-                        content = textPaymentDetails,
-                        fontSize = fontSize24,
-                        isBold = true,
-                        alignment = TextAlignment.LEFT
-                    ),
-                    PrintData.Text(
-                        content = textPaymentAmount,
+                        content = formatter.formatText(
+                            textStart = textPaymentDetails,
+                            textEnd = textPaymentAmount,
+                            fontSize = fontSize24
+                        ),
                         fontSize = fontSize24,
                         isBold = true,
                         alignment = TextAlignment.RIGHT
@@ -359,13 +362,11 @@ class MainViewModel(
                     PrintData.LineFeed,
                     /*Total Paid*/
                     PrintData.Text(
-                        content = textTotalPaid,
-                        fontSize = fontSize24,
-                        isBold = true,
-                        alignment = TextAlignment.LEFT
-                    ),
-                    PrintData.Text(
-                        content = textTotalPaidAmount,
+                        content = formatter.formatText(
+                            textStart = textTotalPaid,
+                            textEnd = textTotalPaidAmount,
+                            fontSize = fontSize24
+                        ),
                         fontSize = fontSize24,
                         isBold = true,
                         alignment = TextAlignment.RIGHT
@@ -380,13 +381,11 @@ class MainViewModel(
                     PrintData.LineFeed,
                     /*Payment Method*/
                     PrintData.Text(
-                        content = textPaymentMethod,
-                        fontSize = fontSize24,
-                        isBold = false,
-                        alignment = TextAlignment.LEFT
-                    ),
-                    PrintData.Text(
-                        content = textPaymentMethodDetails,
+                        content = formatter.formatText(
+                            textStart = textPaymentMethod,
+                            textEnd = textPaymentMethodDetails,
+                            fontSize = fontSize24
+                        ),
                         fontSize = fontSize24,
                         isBold = false,
                         alignment = TextAlignment.RIGHT
@@ -409,15 +408,49 @@ class MainViewModel(
                         alignment = TextAlignment.CENTER
                     ),
                     PrintData.LineFeed,
-                    PrintData.LineFeed,
-                    PrintData.LineFeed,
 
                     PrintData.Text(
-                        content = contentLine,
+                        content = bulletOperator,
                         fontSize = fontSize16,
                         isBold = false,
                         alignment = TextAlignment.CENTER
                     ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = bulletOperator,
+                        fontSize = fontSize16,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = bulletOperator,
+                        fontSize = fontSize16,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = bulletOperator,
+                        fontSize = fontSize16,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = bulletOperator,
+                        fontSize = fontSize16,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.LineFeed,
+                    PrintData.Text(
+                        content = contentCutPaper,
+                        fontSize = fontSize16,
+                        isBold = false,
+                        alignment = TextAlignment.CENTER
+                    ),
+                    PrintData.CutPaper
                 )
 
                 printUseCase.printReceipt(receiptItems)
